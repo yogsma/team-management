@@ -17,20 +17,42 @@ There are 5 APIs to manage the team members:
 
 Note - This backend project was built using Python 3.8 and Django 4.2.16
 
-1. Start the virtual environment by activating
+### 1. Create a virtual environment 
+
+```
+python -m venv env
+```
+
+### 2. Install the dependencies
+
+```
+pip install
+```
+
+### 3. Start the virtual environment by activating
+
+#### On Windows:
 
 ```
 env\Scripts\activate
 ```
 
-2. Run the migrations
+#### On MacOS and Linux:
+
+```
+source env/bin/activate
+```
+
+### 4. Run the migrations
 
 ```
 python manage.py migrate
 ```
 
-3. Run the Django backend webserver
+### 5. Run the Django backend webserver
 
 ```
 python manage.py runserver
 ```
+
+This should start the backend server at http://127.0.0.1:8000/
