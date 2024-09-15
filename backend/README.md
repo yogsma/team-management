@@ -23,13 +23,7 @@ Note - This backend project was built using Python 3.8 and Django 4.2.16
 python -m venv env
 ```
 
-### 2. Install the dependencies
-
-```
-pip install
-```
-
-### 3. Start the virtual environment by activating
+### 2. Start the virtual environment by activating
 
 #### On Windows:
 
@@ -41,6 +35,12 @@ env\Scripts\activate
 
 ```
 source env/bin/activate
+```
+
+### 3. Install the dependencies
+
+```
+pipenv install
 ```
 
 ### 4. Run the migrations
@@ -56,3 +56,6 @@ python manage.py runserver
 ```
 
 This should start the backend server at http://127.0.0.1:8000/
+
+
+## Total Time for this project - 1 hour 50 minutes
