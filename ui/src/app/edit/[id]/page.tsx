@@ -21,6 +21,12 @@ export default function EditMember({ params }: { params: { id: string } }) {
     fetchMember(params.id).then(setFormData);
   }, [params.id]);
 
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+
+  const handleDeleteClick = () => {
+    setShowConfirmDialog(true);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     updateMember(params.id, formData).then(() => {
@@ -33,14 +39,21 @@ export default function EditMember({ params }: { params: { id: string } }) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  const handleDelete = async () => {
-    const deleted = await deleteMember(params.id);
-    if (deleted) {
-      console.log('Delete member', params.id);
+  const handleConfirmDelete = async () => {
+    try {
+      await deleteMember(params.id);
+      showToast('Member deleted successfully', 'success');
       router.push('/');
-    } else {
+    } catch (error) {
+      console.error('Error deleting member:', error);
       showToast('Failed to delete member', 'error');
+    } finally {
+      setShowConfirmDialog(false);
     }
+  };
+
+  const handleCancelDelete = () => {
+    setShowConfirmDialog(false);
   };
 
   return (
@@ -133,10 +146,26 @@ export default function EditMember({ params }: { params: { id: string } }) {
           <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
             Save
           </button>
-          <button type="button" onClick={handleDelete} className="bg-red-500 text-white px-4 py-2 rounded">
+          <button type="button" onClick={handleDeleteClick} className="bg-red-500 text-white px-4 py-2 rounded">
             Delete
           </button>
         </div>
+        {showConfirmDialog && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg">
+            <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
+            <p className="mb-4">Are you sure you want to delete this member?</p>
+            <div className="flex justify-end">
+              <button onClick={handleCancelDelete} className="mr-2 px-4 py-2 bg-gray-300 rounded">
+                Cancel
+              </button>
+              <button onClick={handleConfirmDelete} className="px-4 py-2 bg-red-500 text-white rounded">
+                Proceed
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </form>
     </main>
   );
