@@ -16,9 +16,26 @@ export default function AddMember() {
     phone: '',
     role: 'regular'
   });
+  const [errors, setErrors] = useState({
+    email: '',
+    phone: '',
+  });
+  const validateEmail = (email: string) => {
+    const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return re.test(email);
+  };
+
+  const validatePhone = (phone: string) => {
+    const re = /^\+?[1-9]\d{1,14}$/;
+    return re.test(phone);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (errors.email || errors.phone) {
+      showToast('Please correct the errors before submitting', 'error');
+      return;
+    }
     addMember(formData).then(() => {
       router.push('/');
     }).catch((error) => {
@@ -27,7 +44,19 @@ export default function AddMember() {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    if (name === 'email') {
+      setErrors(prev => ({
+        ...prev,
+        email: validateEmail(value) ? '' : 'Please enter a valid email address',
+      }));
+    } else if (name === 'phone') {
+      setErrors(prev => ({
+        ...prev,
+        phone: validatePhone(value) ? '' : 'Please enter a valid phone number',
+      }));
+    }
   };
 
   return (
@@ -73,9 +102,10 @@ export default function AddMember() {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full px-3 py-2 border rounded"
+            className={`w-full px-3 py-2 border rounded ${errors.email ? 'border-red-500' : ''}`}
             required
           />
+          {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
         </div>
         <div className="mb-4">
           <label htmlFor="phone" className="block mb-2">Phone</label>
@@ -85,9 +115,10 @@ export default function AddMember() {
             name="phone"
             value={formData.phone}
             onChange={handleChange}
-            className="w-full px-3 py-2 border rounded"
+            className={`w-full px-3 py-2 border rounded ${errors.phone ? 'border-red-500' : ''}`}
             required
           />
+          {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
         </div>
         <div className="mb-6">
           <label className="block mb-3 text-lg font-bold">Role</label>
